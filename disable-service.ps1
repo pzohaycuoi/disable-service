@@ -7,6 +7,17 @@ param (
 # Loop through the service's name array, if service is running then stop service and disable it
 foreach ($service in $Services) {
 
+  $getServiceStartupType = (Get-Service -Name $service).StartType
+  if ($getServiceStartupType -eq "Disabled") {
+
+    Continue
+
+  } else {
+    
+    Set-Service -Name $service -StartupType "Disabled"
+
+  }
+
   for ($i = 0; $i -lt 3; $i++) {
 
     $getServiceStatus = (Get-Service -Name $service).Status
@@ -22,17 +33,6 @@ foreach ($service in $Services) {
       Start-Sleep -Seconds 2
 
     }
-
-  }
-
-  $getServiceStartupType = (Get-Service -Name $service).StartType
-  if ($getServiceStartupType -eq "Disabled") {
-
-    Continue
-
-  } else {
-    
-    Set-Service -Name $service -StartupType "Disabled"
 
   }
 
